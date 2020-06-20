@@ -4,16 +4,24 @@ const app = express();
 const massive = require('massive');
 const { SERVER_PORT, DB_STRING } = process.env;
 
-const controller = require('./controller');
+const { register, login, logout, getCustomer, changePassword } = require('./controller');
 
 // middleware
 app.use(express.json());
 
-massive(DB_STRING).then(db=>{
+massive({
+    connectionString: DB_STRING,
+    ssl: {
+        rejectUnauthorized: false
+    }
+}).then(db=>{
     app.set('db',db);
     console.log('Database connected!');    
 });
 // endpoint
+
+// auth
+app.post('/api/auth/register', register);
 
 // listen
 app.listen(SERVER_PORT, ()=>console.log('Server is listening to port', SERVER_PORT));
