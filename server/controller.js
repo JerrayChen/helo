@@ -1,11 +1,14 @@
 const bcrypt = require('bcryptjs');
 module.exports = {
     register,
+    login,
 }
 
 function register(req, res) {
     const db = req.app.get('db');
     const { username, password } = req.body;
+    // console.log(req.body);
+    
     db.getUsername(username).then(found => {
         // console.log(found);
         if(!username){
@@ -38,4 +41,34 @@ function register(req, res) {
         console.log("this is err msg:", err)
     });
 
+}
+
+function login(req,res){
+    const db = req.app.get('db');
+    const { username, password } = req.body;
+    let foundUser;
+    db.getUsername(username).then(found => {
+        // console.log(found);
+        if (!found[0]) {
+            res.status(403).json("Email or password incorrect!");
+            throw new Error("Email or password incorrect!");
+        } else {
+            foundUser = found[0]
+            return bcrypt.compare(password, foundUser.password);
+        }
+    }).then(authUser => {
+        if(!authUser){
+            res.status(403).json("Email or password incorrect!");
+        }else{
+            req.session.user = {
+                userId: foundUser.id,
+                username: foundUser.username,
+                profile: foundUser.profile_pic
+            }
+
+            res.status(200).json(req.session.user);
+        }
+    }).catch(err => {
+        console.log("this is err msg:", err)
+    });
 }
