@@ -14,6 +14,8 @@ const SET_USER = 'SET_USER';
 
 export function setUser(user) {
     const { id, username, profile_pic } = user
+    console.log('reducer');
+    
     return {
         type: SET_USER,
         payload: { id, username, profile_pic }
@@ -39,8 +41,14 @@ export function setUser(user) {
 
 export default function reducer(state = initState, action) {
     const { type, payload } = action;
+    // console.log(type);
+    
     switch (type) {
-        case `${SET_USER}_FULFILLED`:
+        
+        
+        case SET_USER:
+            // console.log('payload');
+            
             return {
                 ...state,
                 id: payload.id,

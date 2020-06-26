@@ -35,11 +35,15 @@ class Auth extends Component {
     login = () => {
         let { username, password } = this.state;
         axios.post('/api/auth/login', { username, password }).then(userInfo => {
+            // console.log(userInfo);
+            
             let user = {
                 id: userInfo.data.userId,
                 username: userInfo.data.username,
                 profile_pic: userInfo.data.profile
             }
+            // console.log(user);
+            
             this.props.setUser(user);
             this.props.history.push('/dashboard');
         }).catch(err => console.log(err.response))
