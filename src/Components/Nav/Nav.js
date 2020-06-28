@@ -1,8 +1,34 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
+import { setUser } from '../../ducks/reducer';
+import axios from 'axios';
 
 class Nav extends Component {
+
+    componentDidMount(){
+        this.getUserInfo();
+    }
+
+    getUserInfo = () => {
+        axios.get('/api/auth/me').then(response=>{
+            let user = {
+                username: response.data.username,
+                profile_pic: response.data.profile_pic,
+            }
+            this.props.setUser(user)
+        })
+    }
+
+    logout = () => {
+        axios.post('/api/auth/logout').then(response=>{
+            let user = {
+                username: '',
+                profile_pic: '',
+            }
+            this.props.setUser(user)
+        })
+    }
 
     render() {
         return (
@@ -17,7 +43,7 @@ class Nav extends Component {
                     <button>New Post</button>
                 </Link>
                 <Link to='/'>
-                    <button>Log out</button>
+                    <button onClick={this.logout}>Log out</button>
                 </Link>
             </div>
         );
@@ -32,4 +58,4 @@ const mapStateToProps = (reduxState) => {
     }
 }
 
-export default connect(mapStateToProps)(Nav);
+export default connect(mapStateToProps, { setUser })(Nav);

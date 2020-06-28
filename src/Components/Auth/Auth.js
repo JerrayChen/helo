@@ -38,7 +38,7 @@ class Auth extends Component {
             // console.log(userInfo);
             
             let user = {
-                id: userInfo.data.userId,
+                // id: userInfo.data.userId,
                 username: userInfo.data.username,
                 profile_pic: userInfo.data.profile
             }
